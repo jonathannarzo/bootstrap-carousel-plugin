@@ -15,7 +15,11 @@ class twbsAdminUI {
 		global $wpdb;
 		global $slides; // slides table
 		global $photos; // slides photos table
+		// Save created slider
 		if (isset($_POST['submit'])) twbsAdminUI::saveTwbsCarouselOption();
+		// Delete slider
+		if (isset($_GET['delslider'])) twbsAdminUI::deleteTwbsSlider((int) $_GET['delslider']);
+
 		echo '
 		<div class="wrap">
 			<h2>Bootstrap Carousel</h2>
@@ -42,6 +46,7 @@ class twbsAdminUI {
 			$slider_rows = '';
 		foreach ($datas as $key => $data) {
 			$url = '?page='.$_GET['page'].'&viewslider='.$data->id.'&slidename='.$data->slide_name;
+			$url_del_slide = '?page='.$_GET['page'].'&delslider='.$data->id;
 			$slider_rows .= '
 			<tr>
 				<td class="column-columnname">'.$data->id.'</td>
@@ -49,7 +54,7 @@ class twbsAdminUI {
 				<td class="column-columnname">
 					<div class="row-actions visible">
 						<span><a href="'.$url.'">View</a> |</span>
-						<span class="delete"><a href="#" class="delete">Remove</a></span>
+						<span class="delete"><a href="'.$url_del_slide.'" class="delete">Remove</a></span>
 					</div>
 				</td>
 			</tr>';
@@ -71,7 +76,10 @@ class twbsAdminUI {
 	private static function twbsSliderPhotos() {
 		global $wpdb;
 		global $photos; // slide photos table
+		// Save uploded photo to slider
 		if (isset($_POST['submit_photos'])) twbsAdminUI::uploadTwbsCarouselPhotos();
+		// Delete photo
+		if (isset($_GET['delphoto'])) twbsAdminUI::deleteTwbsPhoto((int) $_GET['delphoto']);
 
 		$datas = $wpdb->get_results($wpdb->prepare("SELECT * FROM $photos WHERE slide_id=%s", array($_GET['viewslider'])));
 
@@ -86,7 +94,7 @@ class twbsAdminUI {
 				<td><img src="'.$data->photo_path.'" style="height:60px;"></td>
 				<td>
 					<div class="row-actions visible">
-						<span class="delete"><a href="#" class="delete">Remove</a></span>
+						<span class="delete"><a href="?page='.$_GET['page'].'&viewslider='.$_GET['viewslider'].'&slidename='.$_GET['slidename'].'&delphoto='.$data->id.'" class="delete">Remove</a></span>
 					</div>
 				</td>
 			</tr>';
@@ -131,7 +139,7 @@ class twbsAdminUI {
 
 	private static function uploadTwbsCarouselPhotos() {
 		global $wpdb;
-		global $photos; // slides table
+		global $photos; // slides photos table
 		if (!empty($_POST['slider_id'])) {
 			$images = explode(',', $_POST['image_url']);
 			foreach ($images as $key => $image) {
@@ -139,5 +147,19 @@ class twbsAdminUI {
 				$wpdb->insert($photos, $datas);
 			}
 		}
+	}
+
+	private static function deleteTwbsSlider($slideid) {
+		global $wpdb;
+		global $slides; // slides table
+		if ($slideid)
+			$wpdb->delete($slides, array('id' => $slideid));
+	}
+
+	private static function deleteTwbsPhoto($photoid) {
+		global $wpdb;
+		global $photos; // slide photos table
+		if ($photoid)
+			$wpdb->delete($photos, array('id' => $photoid));
 	}
 }

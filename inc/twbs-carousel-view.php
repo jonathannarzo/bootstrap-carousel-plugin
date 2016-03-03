@@ -14,12 +14,14 @@ class twbsCarouselView {
 				$slide_photos .= '
 				<div class="item '.( ($i == 0) ? 'active' : '' ).'">
 					<center>
-						<img src="'.$data->photo_path.'" alt="...">
+						<img src="'.$data->photo_path.'" alt="" style="width:100%;">
 					</center>
+					<!--
 					<div class="carousel-caption">
 						<h3>Photo Title '.$i.'</h3>
 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
 					</div>
+					-->
 				</div>';
 				$i++;
 			}
